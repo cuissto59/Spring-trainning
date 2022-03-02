@@ -2,8 +2,17 @@ package ma.octo.aop.repository.impl;
 
 import ma.octo.aop.entity.Language;
 import ma.octo.aop.repository.LanguageRepository;
+import ma.octo.aop.util.Logger;
+import ma.octo.aop.util.impl.LoggerImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Component;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -11,8 +20,24 @@ import java.util.function.Predicate;
 
 @Component
 public class LanguageRepositoryImpl implements LanguageRepository {
-  private static final List<Language> LANGUAGES;
 
+  @Autowired
+  private JdbcTemplate template ;
+
+  public LanguageRepositoryImpl(JdbcTemplate template) {
+    this.template = template;
+
+  }
+
+
+  private final List<Language> LANGUAGES = template.query("select * from LANGUAGES ",
+          (rs, rowNum) -> new Language(rs.getString("id"),rs.getString("name"),rs.getString("author"),rs.getString("fileExtension"))
+  );
+
+
+
+
+/*
   static {
     var java = new Language("java", "Java", "James Gosling", "java");
     var cpp = new Language("cpp", "C++", "Bjarne Stroustrup", "cpp");
@@ -23,6 +48,7 @@ public class LanguageRepositoryImpl implements LanguageRepository {
     var python = new Language("python", "Python", "Guido van Rossum", "py");
     LANGUAGES = List.of(java, cpp, cSharp, perl, haskell, lua, python);
   }
+  */
 
   @Override
   public Optional<Language> findByExtension(final String extension) {

@@ -4,6 +4,7 @@ import ma.octo.aop.config.AppConfig;
 import ma.octo.aop.entity.Language;
 import ma.octo.aop.service.LanguageService;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.util.Scanner;
 
@@ -19,6 +20,7 @@ public class CLI {
 
     final var cli = new CLI(context.getBean(LanguageService.class));
     cli.start();
+
 
   }
 
